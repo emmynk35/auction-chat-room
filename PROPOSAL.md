@@ -13,23 +13,23 @@ We plan to integrate a standard chat channel with an online marketplace to allow
 Our project proposal would be useful as our chat room would essentially function like the virtual equivalent of an exchange floor, where buy and sell orders can be typed into a channel that can be viewed as a "live-feed" while also being collected, aggregated, and displayed in a separate display that would show information like average, lowest, and highest price. This would allow people to find potential trade partners and spend more time actually conducting transactions.
 
 **Difficulties:**
-	* Chat filtering features
-	* Making sure different parts of UI are synced
-	* Building GUI in a user friendly manner
-	* Handling simultaneous connections
-	* How people access the chat room
+* Chat filtering features
+* Making sure different parts of UI are synced
+* Building GUI in a user friendly manner
+* Handling simultaneous connections
+* How people access the chat room
 
 ## Functional Requirements
 
 **Must-haves:**
-	* Can enter buy and sell commmands w/ prices
-	* Must handle login, usernames (authentication service)
-	* Must be able to DM (direct message) people
-	* UI implementation
-	* Real time tracking of price changes
+* Can enter buy and sell commmands w/ prices
+* Must handle login, usernames (authentication service)
+* Must be able to DM (direct message) people
+* UI implementation
+* Real time tracking of price changes
 
 **Nice-to-haves:**
-	* Mock inventory of what you currently own
+* Mock inventory of what you currently own
 
 ## Use Cases
 
