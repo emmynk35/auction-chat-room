@@ -1,0 +1,17 @@
+.pt {
+    display: flex;
+    
+}
+
+.sbar {
+   overflow: hidden;
+   background-color: white;
+   box-shadow: 10px 5px 5px grey;
+}
+
+.sbar a {
+    float:left;
+    display: block;
+    color: black;
+    padding: 10px;
+}
