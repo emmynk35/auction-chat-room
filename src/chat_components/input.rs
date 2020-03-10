@@ -1,16 +1,19 @@
 use yew::prelude::*;
+use yew::components::Select;
+use strum::IntoEnumIterator;
+use strum_macros::{Display, EnumIter, EnumString};
 
+#[derive(Clone, Debug, Display, EnumString, EnumIter, PartialEq)]
 enum Item {
-    None,
-    Bronze_Sword,
-    Iron_Platebody,
+    BronzeSword,
+    IronPlatebody,
 }
 
 struct Input {
     link: ComponentLink<Self>,
     wtbuy: bool,
     price: usize,
-    item: Item, 
+    item: Option<Item>, 
 }
 
 enum Msg {
@@ -38,8 +41,8 @@ impl Component for Input {
             Msg::changedBuySell => {
                 
             }
-            Msg::choseItem => {
-
+            Msg::choseItem(item) => {
+                self.item = Some(item);
             }
             Msg::changedPrice = > {
 
@@ -53,13 +56,29 @@ impl Component for Input {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <select onchange=self.link.callback(function: F)>
-                    <option value="none">{ "Select an Item" }</option>
-                    <option value="sword">{ "Bronze Sword" }</option>
-                    <option value="platebody">{ "Iron Platebody" }</option>
-                </select>
-            </div>
+            <>
+                <div>
+                    <Select<Item>
+                    selected=self.item.clone()
+                    options=Item::iter().collect::<Vec<_>>()
+                    onchange=self.link.callback(Msg::choseItem) />
+                </div>
+            </>
         }
     }
 }
+
+// impl Input {
+//     fn show_cur_item(&self) {
+//         if let Some(item) = self.item.as_ref() {
+//             match item {
+//                 Item::BronzeSword => html! { <p>{ "Bronze Sword" }</p> },
+//                 Item::IronPlatebody => html! { <p>{ "Iron Axe" }</p>},
+//             }
+//         } else {
+//             html! {
+//                 <p>{ "Nothing rn" }</p>
+//             }
+//         }
+//     }
+// }

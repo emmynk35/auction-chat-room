@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 yew = { version = "0.13.0", features = ["std_web"] }
+strum = "0.13"
+strum_macros = "0.13"
