@@ -24,10 +24,10 @@ struct Input {
 }
 
 enum Msg {
-    changedAction(Action),
-    choseItem(Item),
-    changedPrice(usize),
-    hitEnter,
+    ChangedAction(Action),
+    ChoseItem(Item),
+    ChangedPrice(usize),
+    HitEnter,
 }
 
 impl Component for Input {
@@ -45,16 +45,16 @@ impl Component for Input {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::changedAction(action) => {
+            Msg::ChangedAction(action) => {
                 self.action = action;
             }
-            Msg::choseItem(item) => {
+            Msg::ChoseItem(item) => {
                 self.item = Some(item);
             }
-            Msg::changedPrice(price) = > {
+            Msg::ChangedPrice(price) => {
                 self.price = price
             }
-            Msg::hitEnter = > {
+            Msg::HitEnter => {
                 unimplemented!
             }
         }
@@ -68,16 +68,16 @@ impl Component for Input {
                     <Select<Action>
                     selected=self.action.clone()
                     options=Action::iter().collect::<Vec<_>>()
-                    onchange=self.link.callback(Msg::changedAction) />
+                    onchange=self.link.callback(Msg::ChangedAction) />
 
                     <Select<Item>
                     selected=self.item.clone()
                     options=Item::iter().collect::<Vec<_>>()
-                    onchange=self.link.callback(Msg::choseItem) />
+                    onchange=self.link.callback(Msg::ChoseItem) />
 
-                    <input type="number" min="1" max="2147483647" oninput=self.link.callback(|e: InputData| Msg::changedPrice(e.value))>
+                    <input type="number" min="1" max="2147483647" oninput=self.link.callback(|e: InputData| Msg::ChangedPrice(e.value.parse::<usize>().unwrap()))>
 
-                    <button onclick=self.link.callback(|_| Msg::hitEnter)>{ "Post Item" }</button>
+                    <button onclick=self.link.callback(|_| Msg::HitEnter)>{ "Post Item" }</button>
                 </div>
             </>
         }
