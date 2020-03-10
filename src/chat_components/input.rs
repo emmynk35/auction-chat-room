@@ -1,5 +1,6 @@
 use yew::prelude::*;
 use yew::components::Select;
+use yew::html::InputData;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
@@ -9,15 +10,21 @@ enum Item {
     IronPlatebody,
 }
 
+#[derive(Clone, Debug, Display, EnumString, EnumIter, PartialEq)]
+enum Action {
+    WTB,
+    WTS,
+}
+
 struct Input {
     link: ComponentLink<Self>,
-    wtbuy: bool,
+    action: Action,
     price: usize,
     item: Option<Item>, 
 }
 
 enum Msg {
-    changedBuySell(bool),
+    changedAction(Action),
     choseItem(Item),
     changedPrice(usize),
     hitEnter,
@@ -30,7 +37,7 @@ impl Component for Input {
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         Input {
             link,
-            wtbuy: True,
+            action: Action::WTB,
             price: 500,
             item: None,
         }
@@ -38,17 +45,17 @@ impl Component for Input {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::changedBuySell => {
-                
+            Msg::changedAction(action) => {
+                self.action = action;
             }
             Msg::choseItem(item) => {
                 self.item = Some(item);
             }
-            Msg::changedPrice = > {
-
+            Msg::changedPrice(price) = > {
+                self.price = price
             }
             Msg::hitEnter = > {
-
+                unimplemented!
             }
         }
         true
@@ -58,10 +65,19 @@ impl Component for Input {
         html! {
             <>
                 <div>
+                    <Select<Action>
+                    selected=self.action.clone()
+                    options=Action::iter().collect::<Vec<_>>()
+                    onchange=self.link.callback(Msg::changedAction) />
+
                     <Select<Item>
                     selected=self.item.clone()
                     options=Item::iter().collect::<Vec<_>>()
                     onchange=self.link.callback(Msg::choseItem) />
+
+                    <input type="number" min="1" max="2147483647" oninput=self.link.callback(|e: InputData| Msg::changedPrice(e.value))>
+
+                    <button onclick=self.link.callback(|_| Msg::hitEnter)>{ "Post Item" }</button>
                 </div>
             </>
         }
@@ -80,5 +96,9 @@ impl Component for Input {
 //                 <p>{ "Nothing rn" }</p>
 //             }
 //         }
+//     }
+
+//     fn submit(&self) {
+
 //     }
 // }
