@@ -1,13 +1,15 @@
 use yew::prelude::*;
 use yew::components::Select;
-use yew::html::InputData;
+use yew::html::{InputData, Properties, Children};
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
+use std::collections::HashMap;
 
-#[derive(Clone, Debug, Display, EnumString, EnumIter, PartialEq)]
+#[derive(Clone, Debug, Display, EnumString, EnumIter, PartialEq, Eq, Hash)]
 enum Item {
-    BronzeSword,
-    IronPlatebody,
+    Sword,
+    Helmet,
+    Bow,
 }
 
 #[derive(Clone, Debug, Display, EnumString, EnumIter, PartialEq)]
@@ -21,6 +23,10 @@ struct Input {
     action: Action,
     price: usize,
     item: Option<Item>, 
+    wtb_max_prices: HashMap<Item, usize>,
+    wts_min_prices: HashMap<Item, usize>,
+    wtb_history: Vec<(Item, usize)>,
+    wts_history: Vec<(Item, usize)>,
 }
 
 enum Msg {
@@ -40,6 +46,10 @@ impl Component for Input {
             action: Action::WTB,
             price: 500,
             item: None,
+            wtb_max_prices: HashMap::new(),
+            wts_min_prices: HashMap::new(),
+            wtb_history: Vec::new(),
+            wts_history: Vec::new(),
         }
     }
 
@@ -52,10 +62,32 @@ impl Component for Input {
                 self.item = Some(item);
             }
             Msg::ChangedPrice(price) => {
-                self.price = price
+                self.price = price;
             }
             Msg::HitEnter => {
-                unimplemented!
+                if let Some(item) = &self.item {
+                    if &self.action == &Action::WTB {
+                        if let Some(cost) = &self.wtb_max_prices.get(&item) {
+                            if &self.price > cost {
+                                self.wtb_max_prices.insert(item.clone(), self.price)
+                            }
+                        } else {
+                            self.wtb_max_prices.insert(item.clone(), self.price);
+                        }
+                        self.wtb_history.push((item.clone(), &self.price))
+                    } else {
+                        if let Some(cost) = &self.wts_min_prices.get(&item) {
+                            if &self.price < cost {
+                                self.wts_min_prices.insert(item.clone(), self.price)
+                            }
+                        } else {
+                            self.wts_min_prices.insert(item.clone(), self.price);
+                        }
+                        self.wts_history.push((item.clone(), &self.price))
+                    }
+                    self.price = 500;
+                    self.item = None;
+                } 
             }
         }
         true
@@ -64,41 +96,30 @@ impl Component for Input {
     fn view(&self) -> Html {
         html! {
             <>
+                <Select<Action>
+                selected=self.action.clone()
+                options=Action::iter().collect::<Vec<_>>()
+                onchange=self.link.callback(Msg::ChangedAction) />
+
+                <Select<Item>
+                selected=self.item.clone()
+                options=Item::iter().collect::<Vec<_>>()
+                onchange=self.link.callback(Msg::ChoseItem) />
+
+                <input value=&self.price type="number" min="1" max="2147483647" oninput=self.link.callback(|e: InputData| Msg::ChangedPrice(e.value.parse::<usize>().unwrap()))/>
+
+                <button onclick=self.link.callback(|_| Msg::HitEnter)>{ "Post Item" }</button>
+
                 <div>
-                    <Select<Action>
-                    selected=self.action.clone()
-                    options=Action::iter().collect::<Vec<_>>()
-                    onchange=self.link.callback(Msg::ChangedAction) />
-
-                    <Select<Item>
-                    selected=self.item.clone()
-                    options=Item::iter().collect::<Vec<_>>()
-                    onchange=self.link.callback(Msg::ChoseItem) />
-
-                    <input type="number" min="1" max="2147483647" oninput=self.link.callback(|e: InputData| Msg::ChangedPrice(e.value.parse::<usize>().unwrap()))>
-
-                    <button onclick=self.link.callback(|_| Msg::HitEnter)>{ "Post Item" }</button>
+                    { self.show_postings() }
                 </div>
             </>
         }
     }
 }
 
-// impl Input {
-//     fn show_cur_item(&self) {
-//         if let Some(item) = self.item.as_ref() {
-//             match item {
-//                 Item::BronzeSword => html! { <p>{ "Bronze Sword" }</p> },
-//                 Item::IronPlatebody => html! { <p>{ "Iron Axe" }</p>},
-//             }
-//         } else {
-//             html! {
-//                 <p>{ "Nothing rn" }</p>
-//             }
-//         }
-//     }
-
-//     fn submit(&self) {
-
-//     }
-// }
+impl Input {
+    fn show_postings(&self) -> Html {
+        
+    }
+}
