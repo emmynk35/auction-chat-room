@@ -1,5 +1,5 @@
 [package]
-name = "marketplace-chat-room"
+name = "test_minmax"
 version = "0.1.0"
 authors = ["Athipat Pipatpinyopong <athipatpipat@gmail.com>"]
 edition = "2018"
